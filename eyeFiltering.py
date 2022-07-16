@@ -25,7 +25,10 @@ while True:
     faces = face_cascade.detectMultiScale(gray_picture, 1.1, 5)
     error = 0
 
-    for (x,y,w,h) in faces:
+    if len(faces) == 0:
+        continue
+
+    for (x,y,w,h) in faces[np.argsort(faces[:, 2] * faces[:, 3])]:
         error = 1
         #cv2.rectangle(frame,(x,y),(x+w,y+h),(255,255,0),5)
         gray_face = gray_picture[y:y+h, x:x+w] # cut the gray face frame out
