@@ -30,14 +30,14 @@ while True:
         #cv2.rectangle(frame,(x,y),(x+w,y+h),(255,255,0),5)
         gray_face = gray_picture[y:y+h, x:x+w] # cut the gray face frame out
         face = frame[y:y+h, x:x+w] # cut the face frame out
-        eyes = eye_cascade.detectMultiScale(gray_face, 1.1, 10)
+        #eyes = eye_cascade.detectMultiScale(gray_face, 1.1, 10)
         '''
         for (ex,ey,ew,eh) in eyes: 
             cv2.rectangle(frame,(x+ex,y+ey),(x+ex+ew,y+ey+eh),(0,0,255),7)'''
         #eye_frame = frame[eyes[0][0]:eyes[1][0]+eyes[1][2], eyes[0][1]:eyes[1][1]+eyes[1][3]]
 
         h,w = face.shape[:2]
-        cut_face = face[round(h/4):round(h/2), 0:w]
+        cut_face = face[round(h/4):round(h/2), w//8:7*w//8]
         eye_resized = cv2.resize(cut_face,(frame_width*3, frame_height//2))
         eye_resized = eye_resized[:, :eye_resized.shape[1]//2]
         
