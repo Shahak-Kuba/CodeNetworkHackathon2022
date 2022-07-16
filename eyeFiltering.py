@@ -14,6 +14,7 @@ prev_eye_y_pos = 0
 
 prev_dir = "None"
 curr_dir = "None"
+new_dir = "None"
 
 def error_print(i):
     face_error = "None"
@@ -56,15 +57,17 @@ while True:
             cv2.drawContours(eye_resized, [cnt], -1, (0, 0, 255), 3)
             cv2.line(eye_resized, (x + int(w/2), 0), (x + int(w/2), rows), (0, 255, 0), 2)
             cv2.line(eye_resized, (0, y + int(h/2)), (cols, y + int(h/2)), (0, 255, 0), 2)
-            eye_x_pos = 0.5 * eye_x_pos + 0.5 * ( x + int(w/2) )
-            eye_y_pos = 0.5 * eye_y_pos + 0.5 * ( y + int(h/2) )
+            eye_x_pos = 0.6 * eye_x_pos + 0.4 * ( x + int(w/2) )
+            eye_y_pos = 0.6 * eye_y_pos + 0.4 * ( y + int(h/2) )
             break
 
 
-        if(eye_x_pos - prev_eye_x_pos > 0): # Left
+        if(eye_x_pos - prev_eye_x_pos > 50): # Left
             new_dir = "Left"
-        if(eye_x_pos - prev_eye_x_pos < 0): # Right
+        elif(eye_x_pos - prev_eye_x_pos < -50): # Right
             new_dir = "Right"
+        else:
+            new_dir = "None"
         #if(eye_y_pos - prev_eye_y_pos > 0): # Down
         #    new_dir = "Down"
         #if(eye_y_pos - prev_eye_y_pos < 0): # Up
@@ -75,6 +78,8 @@ while True:
                 gui.scroll(1)
             if(curr_dir == "Left"):
                 gui.scroll(-1)
+            if(curr_dir == "None"):
+                pass
 
         prev_dir = curr_dir
         curr_dir = new_dir
@@ -82,10 +87,10 @@ while True:
         txt = "X: {0}, Y: {1}, prev direction: {2}, current direction: {3}".format(round(eye_x_pos),round(eye_y_pos),
         prev_dir, curr_dir)
         
-        #img_with_pos = cv2.putText(eye_resized, txt, ((frame_width//2) + 50,50), cv2.FONT_HERSHEY_SIMPLEX, 
-        #           1, (255, 0, 0), 2, cv2.LINE_AA)
+        img_with_pos = cv2.putText(eye_resized, txt, ((frame_width//2) + 50,50), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255, 0, 0), 2, cv2.LINE_AA)
 
-        #cv2.imshow("EYE TRACKER", img_with_pos)
+        cv2.imshow("EYE TRACKER", img_with_pos)
 
 
 
