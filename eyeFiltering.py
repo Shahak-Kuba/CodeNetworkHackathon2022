@@ -1,6 +1,10 @@
+from typing import Tuple
 import cv2
 import numpy as np
 import pyautogui as gui
+from collections import deque
+
+SMOOTH_WINDOW = 30
 
 video = cv2.VideoCapture(0)
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -16,6 +20,13 @@ prev_dir = "None"
 curr_dir = "None"
 new_dir = "None"
 
+def average_last_faces(last_faces: deque) -> Tuple[int, int, int, int]:
+    if len(last_faces) == 0:
+        return last_faces[0]
+    
+    x, y, w, h = np.array(last_faces).mean(axis=0).round().astype(int)
+    return x, y, w, h
+
 def error_print(i):
     face_error = "None"
     if(i == 0):
@@ -23,6 +34,8 @@ def error_print(i):
     if(i == 1):
         face_error = "Face detected"
     print(face_error)
+
+last_faces = deque(maxlen=SMOOTH_WINDOW)
 
 while True:
     ret, frame = video.read()
@@ -36,6 +49,8 @@ while True:
         continue
 
     for (x,y,w,h) in faces[np.argsort(faces[:, 2] * faces[:, 3])]:
+        last_faces.append((x, y, w, h))
+        (x, y, w, h) = average_last_faces(last_faces)
         prev_eye_x_pos = eye_x_pos
         prev_eye_y_pos = eye_y_pos
         error = 1
@@ -43,7 +58,7 @@ while True:
         face = frame[y:y+h, x:x+w] # cut the face frame out
 
         h,w = face.shape[:2]
-        cut_face = face[round(h/4):round(h/2), w//4:w//2]
+        cut_face = face[round(h/3.5):round(h/2), w//4:w//2]
         eye_resized = cv2.resize(cut_face,(frame_width*3, frame_height//2))
         eye_resized = eye_resized[:, :(3 * eye_resized.shape[1])//4]
         
