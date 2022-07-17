@@ -1,5 +1,6 @@
 from typing import Tuple
 import cv2
+from cv2 import COLOR_GRAY2BGR
 import numpy as np
 import pyautogui as gui
 from collections import deque
@@ -132,10 +133,10 @@ while True:
             eye_y_pos = 0.6 * eye_y_pos + 0.4 * ( y + int(h/2) )
             break
 
-
-        if(eye_x_pos - prev_eye_x_pos > 50): # Left
+        _,ref_x = eye_resized.shape[:2]
+        if(ref_x - eye_x_pos < 0 and eye_x_pos - prev_eye_x_pos > 50): # Left
             new_dir = "Left"
-        elif(eye_x_pos - prev_eye_x_pos < -50): # Right
+        elif(ref_x - eye_x_pos > 0 and eye_x_pos - prev_eye_x_pos < -50): # Right
             new_dir = "Right"
         else:
             new_dir = "None"
