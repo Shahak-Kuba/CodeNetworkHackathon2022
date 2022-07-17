@@ -36,6 +36,7 @@ def error_print(i):
     print(face_error)
 
 last_faces = deque(maxlen=SMOOTH_WINDOW)
+last_eye = deque(maxlen=SMOOTH_WINDOW // 2)
 
 while True:
     ret, frame = video.read()
@@ -72,6 +73,8 @@ while True:
     
         for cnt in contours:
             (x, y, w, h) = cv2.boundingRect(cnt)
+            last_eye.append((x, y, w, h))
+            (x, y, w, h) = average_last_faces(last_eye)
             cv2.drawContours(eye_resized, [cnt], -1, (0, 0, 255), 3)
             cv2.line(eye_resized, (x + int(w/2), 0), (x + int(w/2), rows), (0, 255, 0), 2)
             cv2.line(eye_resized, (0, y + int(h/2)), (cols, y + int(h/2)), (0, 255, 0), 2)
