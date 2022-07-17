@@ -58,7 +58,7 @@ while True:
         face = frame[y:y+h, x:x+w] # cut the face frame out
 
         h,w = face.shape[:2]
-        cut_face = face[round(h/3.5):round(h/2), w//4:w//2]
+        cut_face = face[round(h/4):round(h/2), w//4:w//2]
         eye_resized = cv2.resize(cut_face,(frame_width*3, frame_height//2))
         eye_resized = eye_resized[:, :(3 * eye_resized.shape[1])//4]
         
